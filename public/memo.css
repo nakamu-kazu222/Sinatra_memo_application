@@ -1,0 +1,166 @@
+/*
+////////////////////////////////////////
+reset.css を読み込んで全てのスタイルをなくす
+////////////////////////////////////////
+*/
+
+/* http://meyerweb.com/eric/tools/css/reset/ 
+   v2.0 | 20110126
+   License: none (public domain)
+*/
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+	margin: 0;
+	padding: 0;
+	border: 0;
+	font-size: 100%;
+	font: inherit;
+	vertical-align: baseline;
+}
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+	display: block;
+}
+body {
+	line-height: 1;
+}
+ol, ul {
+	list-style: none;
+}
+blockquote, q {
+	quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+	content: '';
+	content: none;
+}
+table {
+	border-collapse: collapse;
+	border-spacing: 0;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+[data-whatinput="mouse"] *:focus,
+[data-whatinput="touch"] *:focus {
+  outline: none;
+}
+
+input, textarea {
+  font-family: inherit;
+}
+
+
+/*
+////////////////////////////////////////
+メモアプリ用スタイル
+////////////////////////////////////////
+*/
+
+
+body {
+  display: flex;
+  margin: 0;
+  flex-direction: column;
+}
+
+.new_button, .edit_button, .delete_button, .change_button,.index_register_label, .save_button {
+  display: block;
+  color: #fff;
+  width: 100px;
+  height: 25px;
+  text-align: center;
+  line-height:20px;
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.change_button {
+  margin-top: 30px;
+  background-color: #0b2ef5;
+  font-weight: bold;
+}
+
+.new_button {
+  background-color: #068c1c;
+  font-weight: bold;
+}
+
+.edit_button {
+  background-color: #089c9f;
+  font-weight: bold;
+  margin: 30px;
+}
+
+.delete_button {
+  background-color: #f00a0a;
+  float:right;
+  font-weight: bold;
+  margin-right: 30px;
+}
+
+.save_button{
+  margin-top: 30px;
+  background-color: #bf05c2;
+  font-weight: bold;
+}
+
+.index_register_label{
+  background-color: #f00a0a;
+  float:center;
+  width: 100px;
+  height: 25px;
+  font-weight: bold;
+}
+
+.title_textarea, .text_textarea{
+  display: block;
+  color: #000000;
+  width: 500px;
+  padding: 6px;
+  margin: 100 auto;
+  line-height: 1.6;
+  font-size: 15px;
+}
+
+.label{
+  display: block;
+  color: #000000;
+  font-weight: bold;
+  margin-top: 30px;
+}
+
+.index_list_label, .index_register_label, .index_memo_list{
+  display: block;
+  font-weight: bold;
+  margin-top: 30px;
+}
+
+.memo_list_title {
+  list-style: disc;
+}
+
+.header {
+  display: block;
+  color: #000000;
+  line-height: 60px;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: left;
+}
