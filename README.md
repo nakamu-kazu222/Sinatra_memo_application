@@ -1,6 +1,7 @@
 # Sinatra_memo
 
 ## アプリケーションを立ち上げるための手順
+
 - Sinatra をインストール
 ```
 gem install sinatra
