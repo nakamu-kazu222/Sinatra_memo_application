@@ -5,87 +5,95 @@ require 'sinatra/reloader'
 require 'json'
 
 helpers do
-  def file_path(id)
-    "json/memo_#{id}.json"
+  def memo_data_json_file_path(id)
+    "json/memos_#{id}.json"
   end
 
   def h(text)
     Rack::Utils.escape_html(text)
   end
 
-  def json_filename_and_max_id
-    @memo_data = []
-    Dir.glob('json/*').map { |file| @memo_data << JSON.parse(File.open(file).read) }
-    @max_id = @memo_data.max_by { |id| id['id'].to_i }['id']
+  def get_json_filename_and_max_id
+    memo_data = []
+    Dir.glob('json/*.json').map { |file| memo_data << JSON.parse(File.read(file)) }
+    max_id = memo_data.max_by { |id| id['id'].to_i }['id']
+    { memo_data: memo_data, max_id: max_id }
   end
 
-  def display_memo_contents_of_id
-    memo = if File.file?(file_path(params[:id]))
-             File.open(file_path(params[:id])) { |file| JSON.parse(file.read) }
-           else
-             redirect to('not_found_error')
-           end
-    @id = memo['id']
-    @title = memo['title']
-    @text = memo['text']
+  def display_memo_contents_of_id(memo_id)
+    if File.file?(memo_data_json_file_path(memo_id))
+      memo = JSON.parse(File.read(memo_data_json_file_path(memo_id)))
+      id = memo['id']
+      title = memo['title']
+      text = memo['text']
+      { id: id, title: title, text: text }
+    else
+      redirect to('not_found_error')
+    end
   end
 
   def save_memo(id, memo)
-    File.open(file_path(id), 'w') { |file| JSON.dump(memo, file) }
+    File.open(memo_data_json_file_path(id), 'w') { |file| JSON.dump(memo, file) }
   end
 end
 
 get '/' do
-  redirect to('/memo')
+  redirect to('/memos')
 end
 
-get '/memo' do
-  json_filename_and_max_id
+get '/memos' do
+  data = get_json_filename_and_max_id
+  @memo_data = data[:memo_data]
+  @max_id = data[:max_id]
   erb :index
 end
 
-get '/memo/new' do
+get '/memos/new' do
   erb :new
 end
 
-get '/memo/:id' do
-  display_memo_contents_of_id
+get '/memos/:id' do
+  memo = display_memo_contents_of_id(params[:id])
+  @id = memo[:id]
+  @title = memo[:title]
+  @text = memo[:text]
   erb :show
 end
 
-get '/memo/:id/edit' do
-  display_memo_contents_of_id
+get '/memos/:id/edit' do
+  memo = display_memo_contents_of_id(params[:id])
+  @id = memo[:id]
+  @title = memo[:title]
+  @text = memo[:text]
   erb :edit
 end
 
-post '/memo' do
-  json_filename_and_max_id
-  memo_id = (@max_id.to_i + 1).to_s
+post '/memos' do
+  data = get_json_filename_and_max_id
+  memo_id = (data[:max_id].to_i + 1).to_s
   memo = {
     'id' => memo_id,
-    'time' => Time.now,
     'title' => params[:title],
     'text' => params[:text]
   }
   save_memo(memo_id, memo)
-  redirect to("/memo/#{memo['id']}")
+  redirect to("/memos/#{memo['id']}")
 end
 
-patch '/memo/:id/edit' do
+patch '/memos/:id' do
   memo_id = params[:id]
   memo = {
     'id' => memo_id,
-    'time' => Time.now,
     'title' => params[:title],
     'text' => params[:text]
   }
   save_memo(memo_id, memo)
-  redirect to("/memo/#{params[:id]}")
+  redirect to("/memos/#{memo_id}")
 end
 
-delete '/memo/:id' do
-  File.delete(file_path(params[:id]))
-  redirect to('/memo')
+delete '/memos/:id' do
+  File.delete(memo_data_json_file_path(params[:id]))
+  redirect to('/memos')
 end
 
 not_found do
