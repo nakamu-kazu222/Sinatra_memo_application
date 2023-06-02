@@ -4,10 +4,10 @@
 <section>
   <ul class="index_memo_list">
     <% @memo_data.map do |memo| %>
-      <li class="memo_list_title"><a href="<%= "/memo/#{memo['id']}" %>"><%= h(memo['title']) %></a></li>
+      <li class="memo_list_title"><a href="<%= "/memos/#{memo['id']}" %>"><%= h(memo['title']) %></a></li>
     <% end %>
   </ul>
   <div>
-    <a href="/memo/new" class="index_register_label">メモ登録</a>
+    <a href="/memos/new" class="index_register_label">メモ登録</a>
   </div>
 <section>
