@@ -76,25 +76,39 @@ get '/memos/:id/edit' do
 end
 
 post '/memos' do
-  memo_id = make_id
-  memo = {
-    'id' => memo_id,
-    'title' => params[:title],
-    'text' => params[:text]
-  }
-  save_memo(memo_id, memo)
-  redirect to("/memos/#{memo['id']}")
+  title = params[:title]
+  text = params[:text]
+
+  if title.empty? || text.empty?
+    redirect to('/memos/new')
+  else
+    memo_id = make_id
+    memo = {
+      'id' => memo_id,
+      'title' => title,
+      'text' => text
+    }
+    save_memo(memo_id, memo)
+    redirect to("/memos/#{memo['id']}")
+  end
 end
 
 patch '/memos/:id' do
   memo_id = params[:id]
-  memo = {
-    'id' => memo_id,
-    'title' => params[:title],
-    'text' => params[:text]
-  }
-  save_memo(memo_id, memo)
-  redirect to("/memos/#{memo_id}")
+  title = params[:title]
+  text = params[:text]
+
+  if title.empty? || text.empty?
+    redirect to("/memos/#{memo_id}/edit")
+  else
+    memo = {
+      'id' => memo_id,
+      'title' => title,
+      'text' => text
+    }  
+    save_memo(memo_id, memo)
+    redirect to("/memos/#{memo_id}")
+  end
 end
 
 delete '/memos/:id' do
