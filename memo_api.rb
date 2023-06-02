@@ -21,13 +21,6 @@ helpers do
     new_id
   end
 
-  def get_json_filename_and_max_id
-    memo_data = []
-    Dir.glob('json/*.json').map { |file| memo_data << JSON.parse(File.read(file)) }
-    max_id = memo_data.max_by { |id| id['id'].to_i }['id']
-    { memo_data: memo_data, max_id: max_id }
-  end
-
   def get_memo_contents_of_id(memo_id)
     if File.file?(memo_data_json_file_path(memo_id))
       memo = JSON.parse(File.read(memo_data_json_file_path(memo_id)))
@@ -50,9 +43,7 @@ get '/' do
 end
 
 get '/memos' do
-  data = get_json_filename_and_max_id
-  @memo_data = data[:memo_data]
-  @max_id = data[:max_id]
+  @memo_data = Dir.glob('json/*.json').map { |file| JSON.parse(File.read(file)) }
   erb :index
 end
 
