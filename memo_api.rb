@@ -17,20 +17,18 @@ helpers do
   def make_id
     use_id = Dir.glob('json/*.json').map { |file| JSON.parse(File.read(file))['id'] }
     new_id = SecureRandom.uuid
-    new_id = SecureRandom.uuid until !use_id.include?(new_id)
+    new_id = SecureRandom.uuid while use_id.include?(new_id)
     new_id
   end
 
   def get_memo_contents_of_id(memo_id)
-    if File.file?(memo_data_json_file_path(memo_id))
-      memo = JSON.parse(File.read(memo_data_json_file_path(memo_id)))
-      id = memo['id']
-      title = memo['title']
-      text = memo['text']
-      { id: id, title: title, text: text }
-    else
-      nil
-    end
+    return unless File.file?(memo_data_json_file_path(memo_id))
+
+    memo = JSON.parse(File.read(memo_data_json_file_path(memo_id)))
+    id = memo['id']
+    title = memo['title']
+    text = memo['text']
+    { id:, title:, text: }
   end
 
   def save_memo(id, memo)
@@ -105,7 +103,7 @@ patch '/memos/:id' do
       'id' => memo_id,
       'title' => title,
       'text' => text
-    }  
+    }
     save_memo(memo_id, memo)
     redirect to("/memos/#{memo_id}")
   end
