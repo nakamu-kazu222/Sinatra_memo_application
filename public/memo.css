@@ -17,7 +17,7 @@ body {
   width: 100px;
   height: 25px;
   text-align: center;
-  line-height:20px;
+  line-height: 20px;
   font-size: 15px;
   font-weight: bold;
 }
@@ -41,26 +41,26 @@ body {
 
 .delete_button {
   background-color: #f00a0a;
-  float:right;
+  float: right;
   font-weight: bold;
   margin-right: 30px;
 }
 
-.save_button{
+.save_button {
   margin-top: 30px;
   background-color: #bf05c2;
   font-weight: bold;
 }
 
-.index_register_label{
+.index_register_label {
   background-color: #f00a0a;
-  float:center;
+  float: center;
   width: 100px;
   height: 25px;
   font-weight: bold;
 }
 
-.title_textarea, .text_textarea{
+.title_textarea, .text_textarea {
   display: block;
   color: #000000;
   width: 500px;
@@ -70,7 +70,7 @@ body {
   font-size: 15px;
 }
 
-.label{
+.label {
   display: block;
   color: #000000;
   font-weight: bold;
