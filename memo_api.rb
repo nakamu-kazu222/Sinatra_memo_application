@@ -3,6 +3,7 @@
 require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
+require 'securerandom'
 
 helpers do
   def memo_data_json_file_path(id)
@@ -11,6 +12,13 @@ helpers do
 
   def h(text)
     Rack::Utils.escape_html(text)
+  end
+
+  def make_id
+    use_id = Dir.glob('json/*.json').map { |file| JSON.parse(File.read(file))['id'] }
+    new_id = SecureRandom.uuid
+    new_id = SecureRandom.uuid until !use_id.include?(new_id)
+    new_id
   end
 
   def get_json_filename_and_max_id
@@ -73,11 +81,11 @@ get '/memos/:id/edit' do
     @title = memo[:title]
     @text = memo[:text]
     erb :edit
+  end
 end
 
 post '/memos' do
-  data = get_json_filename_and_max_id
-  memo_id = (data[:max_id].to_i + 1).to_s
+  memo_id = make_id
   memo = {
     'id' => memo_id,
     'title' => params[:title],
