@@ -24,3 +24,6 @@ gem 'redcarpet'
 
 # gem "erb_lint"
 gem 'erb_lint', require: false
+
+# gem "parser"
+gem 'parser', ' 3.1.3.0'
