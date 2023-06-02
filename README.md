@@ -12,7 +12,7 @@ gem install sinatra-contrib
 bundle install
 ```
 
-- 下記コマンドでサーバーを立ち上げ、http://localhost:4567/memo でWEBページを開く
+- 下記コマンドでサーバーを立ち上げ、http://localhost:4567/memos でWEBページを開く
 
 ```
 ruby memo_api.rb   
