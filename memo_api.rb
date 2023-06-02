@@ -20,7 +20,7 @@ helpers do
     { memo_data: memo_data, max_id: max_id }
   end
 
-  def display_memo_contents_of_id(memo_id)
+  def get_memo_contents_of_id(memo_id)
     if File.file?(memo_data_json_file_path(memo_id))
       memo = JSON.parse(File.read(memo_data_json_file_path(memo_id)))
       id = memo['id']
@@ -28,7 +28,7 @@ helpers do
       text = memo['text']
       { id: id, title: title, text: text }
     else
-      redirect to('not_found_error')
+      nil
     end
   end
 
@@ -53,19 +53,26 @@ get '/memos/new' do
 end
 
 get '/memos/:id' do
-  memo = display_memo_contents_of_id(params[:id])
-  @id = memo[:id]
-  @title = memo[:title]
-  @text = memo[:text]
-  erb :show
+  memo = get_memo_contents_of_id(params[:id])
+  if memo.nil?
+    redirect to('not_found_error')
+  else
+    @id = memo[:id]
+    @title = memo[:title]
+    @text = memo[:text]
+    erb :show
+  end
 end
 
 get '/memos/:id/edit' do
-  memo = display_memo_contents_of_id(params[:id])
-  @id = memo[:id]
-  @title = memo[:title]
-  @text = memo[:text]
-  erb :edit
+  memo = get_memo_contents_of_id(params[:id])
+  if memo.nil?
+    redirect to('not_found_error')
+  else
+    @id = memo[:id]
+    @title = memo[:title]
+    @text = memo[:text]
+    erb :edit
 end
 
 post '/memos' do
