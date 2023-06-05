@@ -1,4 +1,4 @@
-# Sinatra_memo
+# Sinatra_memo_application
 
 ## アプリケーションを立ち上げるための手順
 - Sinatra をインストール
