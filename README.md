@@ -1,19 +1,27 @@
 # Sinatra_memo_application
+## 概要
+Sinataraを利用したメモアプリケーションです
+メモを作成、編集、削除、一覧表示ができます
 
 ## アプリケーションを立ち上げるための手順
-- Sinatra をインストール
+- リポジトリをローカル環境にコピー
 ```
-gem install sinatra
-gem install sinatra-contrib
+git clone https://github.com/nakamu-kazu222/Sinatra_memo_application.git
 ```
 
-- bundler を使用して gem をインストール
+- ```Sinatra_memo_application```ディレクトリに移動
+```
+cd Sinatra_memo_application
+```
+
+- bundler を使用して Gem をインストール
 ```
 bundle install
 ```
 
-- 下記コマンドでサーバーを立ち上げ、http://localhost:4567/memos でWEBページを開く
+- サーバーを立ち上げる
+```
+bundle exec ruby memo_app.rb   
+```
 
-```
-ruby memo_api.rb   
-```
+- http://localhost:4567/memos で WEBページを開く
