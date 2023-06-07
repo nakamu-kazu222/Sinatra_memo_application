@@ -21,7 +21,7 @@ helpers do
     new_id
   end
 
-  def get_memo_contents_of_id(memo_id)
+  def get_memo(memo_id)
     memo_file_path = memo_data_json_file_path(memo_id)
     if File.exist?(memo_file_path)
       memo = JSON.parse(File.read(memo_file_path))
@@ -53,7 +53,7 @@ get '/memos/new' do
 end
 
 get '/memos/:id' do
-  memo = get_memo_contents_of_id(params[:id])
+  memo = get_memo(params[:id])
   if memo.nil?
     redirect to('not_found_error')
   else
@@ -65,7 +65,7 @@ get '/memos/:id' do
 end
 
 get '/memos/:id/edit' do
-  memo = get_memo_contents_of_id(params[:id])
+  memo = get_memo(params[:id])
   if memo.nil?
     redirect to('not_found_error')
   else
