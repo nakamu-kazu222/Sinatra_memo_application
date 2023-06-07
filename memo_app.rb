@@ -27,8 +27,8 @@ helpers do
     new_id
   end
 
-  def get_memo(memo_id)
-    memo_file_path = memo_data_json_file_path(memo_id)
+  def get_memo(id)
+    memo_file_path = memo_data_json_file_path(id)
     if File.exist?(memo_file_path)
       memo = JSON.parse(File.read(memo_file_path))
       id = memo['id']
@@ -84,33 +84,33 @@ post '/memos' do
     session[:error_message] = 'タイトルと内容を入力してください'
     redirect to('/memos/new')
   else
-    memo_id = make_id
+    id = make_id
     memo = {
-      'id' => memo_id,
+      'id' => id,
       'title' => title,
       'text' => text
     }
-    save_memo(memo_id, memo)
+    save_memo(id, memo)
     redirect to("/memos/#{memo['id']}")
   end
 end
 
 patch '/memos/:id' do
-  memo_id = params[:id]
+  id = params[:id]
   title = params[:title]
   text = params[:text]
 
   if title.empty? || text.empty?
     session[:error_message] = 'タイトルと内容を入力してください'
-    redirect to("/memos/#{memo_id}/edit")
+    redirect to("/memos/#{id}/edit")
   else
     memo = {
-      'id' => memo_id,
+      'id' => id,
       'title' => title,
       'text' => text
     }
-    save_memo(memo_id, memo)
-    redirect to("/memos/#{memo_id}")
+    save_memo(id, memo)
+    redirect to("/memos/#{id}")
   end
 end
 
