@@ -1,4 +1,9 @@
 <section>
+  <script>
+    <% if session[:error_message] %>
+      alert("<%= session.delete(:error_message) %>");
+    <% end %>
+  </script>  
   <form method="post" action="/memos/<%= @memo[:id] %>">
     <div>
       <label class="label">タイトル</label>

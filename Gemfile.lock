@@ -30,6 +30,7 @@ PLATFORMS
 
 DEPENDENCIES
   puma
+  rack
   redcarpet
   sinatra-contrib
 

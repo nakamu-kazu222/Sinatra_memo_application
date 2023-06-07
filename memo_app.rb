@@ -4,6 +4,12 @@ require 'sinatra'
 require 'sinatra/reloader'
 require 'json'
 require 'securerandom'
+require 'rack/session/cookie'
+
+configure do
+  enable :sessions
+  use Rack::Session::Cookie, key: 'rack.session', path: '/', secret: 'your_secret_key'
+end
 
 helpers do
   def memo_data_json_file_path(id)
@@ -75,6 +81,7 @@ post '/memos' do
   text = params[:text]
 
   if title.empty? || text.empty?
+    session[:error_message] = 'タイトルと内容を入力してください'
     redirect to('/memos/new')
   else
     memo_id = make_id
@@ -94,6 +101,7 @@ patch '/memos/:id' do
   text = params[:text]
 
   if title.empty? || text.empty?
+    session[:error_message] = 'タイトルと内容を入力してください'
     redirect to("/memos/#{memo_id}/edit")
   else
     memo = {

@@ -8,3 +8,6 @@ gem 'redcarpet'
 
 # gem "puma"
 gem 'puma'
+
+# gem "rack"
+gem 'rack'
