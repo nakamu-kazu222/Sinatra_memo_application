@@ -3,7 +3,7 @@
 </div>
 <section>
   <ul class="index_memo_list">
-    <% @memo_data.each do |memo| %>
+    <% @memos.each do |memo| %>
       <li class="memo_list_title"><a href="<%= "/memos/#{memo['id']}" %>"><%= h(memo['title']) %></a></li>
     <% end %>
   </ul>

@@ -44,7 +44,7 @@ get '/' do
 end
 
 get '/memos' do
-  @memo_data = Dir.glob('json/*.json').map { |file| JSON.parse(File.read(file)) }
+  @memos = Dir.glob('json/*.json').map { |file| JSON.parse(File.read(file)) }
   erb :index
 end
 
