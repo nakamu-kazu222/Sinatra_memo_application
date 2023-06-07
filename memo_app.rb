@@ -53,25 +53,19 @@ get '/memos/new' do
 end
 
 get '/memos/:id' do
-  memo = get_memo(params[:id])
-  if memo.nil?
-    redirect to('not_found_error')
+  @memo = get_memo(params[:id])
+  if @memo.nil?
+    redirect to('not_found')
   else
-    @id = memo[:id]
-    @title = memo[:title]
-    @text = memo[:text]
     erb :show
   end
 end
 
 get '/memos/:id/edit' do
-  memo = get_memo(params[:id])
-  if memo.nil?
-    redirect to('not_found_error')
+  @memo = get_memo(params[:id])
+  if @memo.nil?
+    redirect to('not_found')
   else
-    @id = memo[:id]
-    @title = memo[:title]
-    @text = memo[:text]
     erb :edit
   end
 end

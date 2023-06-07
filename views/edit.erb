@@ -1,12 +1,12 @@
 <section>
-  <form method="post" action="/memos/<%= @id %>">
+  <form method="post" action="/memos/<%= @memo[:id] %>">
     <div>
       <label class="label">タイトル</label>
-      <input type="text" name="title" value="<%= h(@title) %>" class="title_textfield">
+      <input type="text" name="title" value="<%= h(@memo[:title]) %>" class="title_textfield">
     </div>
     <div>
       <label class="label">内容</label>
-      <textarea name="text" class="text_textarea"><%= h(@text) %></textarea>
+      <textarea name="text" class="text_textarea"><%= h(@memo[:text]) %></textarea>
     </div>
     <div>
       <input type="hidden" name="_method" value="PATCH">
