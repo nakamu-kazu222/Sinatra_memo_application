@@ -34,14 +34,14 @@ helpers do
       id = memo['id']
       title = memo['title']
       text = memo['text']
-      { id:, title:, text: }
+      { id: id, title: title, text: text }
     else
       nil
     end
   end
 
-  def save_memo(id, memo)
-    File.open(memo_data_json_file_path(id), 'w') { |file| JSON.dump(memo, file) }
+  def save_memo(memo)
+    File.open(memo_data_json_file_path(memo['id']), 'w') { |file| JSON.dump(memo, file) }
   end
 end
 
@@ -84,13 +84,12 @@ post '/memos' do
     session[:error_message] = 'タイトルと内容を入力してください'
     redirect to('/memos/new')
   else
-    id = make_id
     memo = {
-      'id' => id,
+      'id' => make_id,
       'title' => title,
       'text' => text
     }
-    save_memo(id, memo)
+    save_memo(memo)
     redirect to("/memos/#{memo['id']}")
   end
 end
@@ -109,7 +108,7 @@ patch '/memos/:id' do
       'title' => title,
       'text' => text
     }
-    save_memo(id, memo)
+    save_memo(memo)
     redirect to("/memos/#{id}")
   end
 end
