@@ -22,13 +22,16 @@ helpers do
   end
 
   def get_memo_contents_of_id(memo_id)
-    return unless File.file?(memo_data_json_file_path(memo_id))
-
-    memo = JSON.parse(File.read(memo_data_json_file_path(memo_id)))
-    id = memo['id']
-    title = memo['title']
-    text = memo['text']
-    { id:, title:, text: }
+    memo_file_path = memo_data_json_file_path(memo_id)
+    if File.exist?(memo_file_path)
+      memo = JSON.parse(File.read(memo_file_path))
+      id = memo['id']
+      title = memo['title']
+      text = memo['text']
+      { id:, title:, text: }
+    else
+      nil
+    end
   end
 
   def save_memo(id, memo)
