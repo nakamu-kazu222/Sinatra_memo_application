@@ -2,12 +2,6 @@
 
 source "https://rubygems.org"
 
-# gem "sinatra"
 gem 'sinatra-contrib'
-gem 'redcarpet'
-
-# gem "puma"
 gem 'puma'
-
-# gem "rack"
 gem 'rack'
