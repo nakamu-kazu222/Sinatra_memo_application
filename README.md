@@ -9,7 +9,7 @@ Sinatraを利用したメモアプリケーションです
 git clone https://github.com/nakamu-kazu222/Sinatra_memo_application.git
 ```
 
-- ```Sinatra_memo_application```ディレクトリに移動
+- `Sinatra_memo_application`ディレクトリに移動
 ```
 cd Sinatra_memo_application
 ```
@@ -21,7 +21,7 @@ bundle install
 
 - サーバーを立ち上げる
 ```
-bundle exec ruby memo_app.rb   
+bundle exec ruby memo_app.rb
 ```
 
 - http://localhost:4567/memos で WEBページを開く
