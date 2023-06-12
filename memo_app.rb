@@ -21,10 +21,7 @@ helpers do
   end
 
   def make_id
-    use_id = Dir.glob('json/*.json').map { |file| JSON.parse(File.read(file))['id'] }
     new_id = SecureRandom.uuid
-    new_id = SecureRandom.uuid while use_id.include?(new_id)
-    new_id
   end
 
   def get_memo(id)
