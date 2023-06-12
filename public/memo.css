@@ -10,7 +10,7 @@ body {
   flex-direction: column;
 }
 
-.new_button, .edit_button, .delete_button, .change_button,.index_register_label, .save_button {
+.edit_button, .delete_button, .change_button,.index_register_label, .save_button {
   display: block;
   color: #fff;
   width: 100px;
@@ -24,11 +24,6 @@ body {
 .change_button {
   margin-top: 30px;
   background-color: #0b2ef5;
-  font-weight: bold;
-}
-
-.new_button {
-  background-color: #068c1c;
   font-weight: bold;
 }
 
