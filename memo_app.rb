@@ -75,7 +75,6 @@ post '/memos' do
   text = params[:text]
 
   if title.empty? || text.empty?
-    session[:error_message] = 'タイトルと内容を入力してください'
     redirect to('/memos/new')
   else
     memo = {
@@ -94,7 +93,6 @@ patch '/memos/:id' do
   text = params[:text]
 
   if title.empty? || text.empty?
-    session[:error_message] = 'タイトルと内容を入力してください'
     redirect to("/memos/#{id}/edit")
   else
     memo = {
