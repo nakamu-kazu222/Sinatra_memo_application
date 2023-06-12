@@ -37,6 +37,10 @@ helpers do
   end
 end
 
+before do
+  FileUtils.mkdir_p('json') unless Dir.exist?('json')
+end
+
 get '/' do
   redirect to('/memos')
 end
