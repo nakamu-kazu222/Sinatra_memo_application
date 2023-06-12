@@ -28,10 +28,7 @@ helpers do
     memo_file_path = memo_data_json_file_path(id)
     if File.exist?(memo_file_path)
       memo = JSON.parse(File.read(memo_file_path))
-      id = memo['id']
-      title = memo['title']
-      text = memo['text']
-      { id: id, title: title, text: text }
+      { id: memo['id'], title: memo['title'], text: memo['text'] }    
     else
       nil
     end
