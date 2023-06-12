@@ -1,9 +1,9 @@
 <div class="header">
   <h2><%= h(@memo[:title]) %></h2>
 </div>
-<section class="memo">
+<section>
   <div>
-    <p class="memo_text"><%= h(@memo[:text]) %></p>
+    <p><%= h(@memo[:text]) %></p>
   </div>
   <form method="post" action="/memos/<%= @memo[:id] %>">
     <div>
