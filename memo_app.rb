@@ -21,17 +21,15 @@ helpers do
   end
 
   def make_id
-    new_id = SecureRandom.uuid
+    SecureRandom.uuid
   end
 
   def get_memo(id)
     memo_file_path = memo_data_json_file_path(id)
-    if File.exist?(memo_file_path)
-      memo = JSON.parse(File.read(memo_file_path))
-      { id: memo['id'], title: memo['title'], text: memo['text'] }
-    else
-      nil
-    end
+    return unless File.exist?(memo_file_path)
+
+    memo = JSON.parse(File.read(memo_file_path))
+    { id: memo['id'], title: memo['title'], text: memo['text'] }
   end
 
   def save_memo(memo)
