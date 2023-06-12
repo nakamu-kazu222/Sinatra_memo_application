@@ -55,7 +55,7 @@ end
 get '/memos/:id' do
   @memo = get_memo(params[:id])
   if @memo.nil?
-    redirect to('not_found')
+    erb :not_found_error
   else
     erb :show
   end
@@ -64,7 +64,7 @@ end
 get '/memos/:id/edit' do
   @memo = get_memo(params[:id])
   if @memo.nil?
-    redirect to('not_found')
+    erb :not_found_error
   else
     erb :edit
   end
