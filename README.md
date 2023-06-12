@@ -14,6 +14,16 @@ git clone https://github.com/nakamu-kazu222/Sinatra_memo_application.git
 cd Sinatra_memo_application
 ```
 
+- リモートブランチをフェッチする
+```
+git fetch origin refs/pull/1/head:memo_application
+```
+
+- フェッチしたブランチに切り替える
+```
+git checkout memo_application
+```
+
 - bundler を使用して Gem をインストール
 ```
 bundle install
