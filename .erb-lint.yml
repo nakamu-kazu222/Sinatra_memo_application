@@ -1,3 +1,4 @@
+---
 glob: "**/*.erb"
 linters:
   RequireInputAutocomplete:
