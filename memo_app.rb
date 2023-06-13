@@ -27,8 +27,9 @@ helpers do
   def get_memo(id)
     memo_file_path = memo_data_json_file_path(id)
     return nil unless File.exist?(memo_file_path)
-
-    memo = JSON.parse(File.read(memo_file_path))
+  
+    memo_content = File.read(memo_file_path)
+    memo = JSON.parse(memo_content)
     { id: memo['id'], title: memo['title'], text: memo['text'] }
   end
 
