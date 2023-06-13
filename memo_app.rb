@@ -29,12 +29,12 @@ helpers do
     return nil unless File.exist?(memo_file_path)
   
     memo_content = File.read(memo_file_path)
-    memo = JSON.parse(memo_content)
-    { id: memo['id'], title: memo['title'], text: memo['text'] }
+    memo = JSON.parse(memo_content, symbolize_names: true)
+    { id: memo[:id], title: memo[:title], text: memo[:text] }
   end
 
   def save_memo(memo)
-    File.open(memo_data_json_file_path(memo['id']), 'w') { |file| JSON.dump(memo, file) }
+    File.open(memo_data_json_file_path(memo[:id]), 'w') { |file| JSON.dump(memo, file) }
   end
 end
 
@@ -86,7 +86,7 @@ post '/memos' do
       'text' => text
     }
     save_memo(memo)
-    redirect to("/memos/#{memo['id']}")
+    redirect to("/memos/#{memo[:id]}")
   end
 end
 
