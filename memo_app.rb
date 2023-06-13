@@ -34,7 +34,7 @@ helpers do
   end
 
   def save_memo(memo)
-    File.open(memo_data_json_file_path(memo[:id]), 'w') { |file| JSON.dump(memo, file) }
+    File.open(memo_data_json_file_path(memo['id']), 'w') { |file| JSON.dump(memo, file) }
   end
 end
 
@@ -74,38 +74,23 @@ get '/memos/:id/edit' do
 end
 
 post '/memos' do
-  title = params[:title]
-  text = params[:text]
-
-  if title.empty? || text.empty?
-    redirect to('/memos/new')
-  else
-    memo = {
-      'id' => make_id,
-      'title' => title,
-      'text' => text
-    }
-    save_memo(memo)
-    redirect to("/memos/#{memo[:id]}")
-  end
+  memo = {
+    'id' => make_id,
+    'title' => params[:title],
+    'text' => params[:text]
+  }
+  save_memo(memo)
+  redirect to("/memos/#{memo['id']}")
 end
 
 patch '/memos/:id' do
-  id = params[:id]
-  title = params[:title]
-  text = params[:text]
-
-  if title.empty? || text.empty?
-    redirect to("/memos/#{id}/edit")
-  else
-    memo = {
-      'id' => id,
-      'title' => title,
-      'text' => text
-    }
-    save_memo(memo)
-    redirect to("/memos/#{id}")
-  end
+  memo = {
+    'id' => params[:id],
+    'title' => params[:title],
+    'text' => params[:text]
+  }
+  save_memo(memo)
+  redirect to("/memos/#{memo['id']}")
 end
 
 delete '/memos/:id' do
