@@ -30,6 +30,7 @@ PLATFORMS
 DEPENDENCIES
   puma
   rack
+  sinatra
   sinatra-contrib
 
 BUNDLED WITH
