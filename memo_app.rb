@@ -30,7 +30,6 @@ helpers do
   
     memo_content = File.read(memo_file_path)
     memo = JSON.parse(memo_content, symbolize_names: true)
-    { id: memo[:id], title: memo[:title], text: memo[:text] }
   end
 
   def save_memo(memo)
