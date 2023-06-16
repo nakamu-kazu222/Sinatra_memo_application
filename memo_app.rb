@@ -22,9 +22,9 @@ helpers do
   def get_memo(id)
     memo_file_path = memo_data_json_file_path(id)
     return nil unless File.exist?(memo_file_path)
-  
+
     memo_content = File.read(memo_file_path)
-    memo = JSON.parse(memo_content, symbolize_names: true)
+    JSON.parse(memo_content, symbolize_names: true)
   end
 
   def save_memo(memo)

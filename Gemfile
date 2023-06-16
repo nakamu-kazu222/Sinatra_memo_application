@@ -4,5 +4,5 @@ source 'https://rubygems.org'
 
 gem 'puma'
 gem 'rack'
-gem 'sinatra-contrib'
 gem 'sinatra'
+gem 'sinatra-contrib'
