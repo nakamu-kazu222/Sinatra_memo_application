@@ -6,11 +6,6 @@ require 'json'
 require 'securerandom'
 require 'rack/session/cookie'
 
-configure do
-  enable :sessions
-  use Rack::Session::Cookie, key: 'rack.session', path: '/', secret: 'your_secret_key'
-end
-
 helpers do
   def memo_data_json_file_path(id)
     "json/memos_#{id}.json"
