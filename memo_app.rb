@@ -28,7 +28,7 @@ helpers do
   end
 
   def save_memo(memo)
-    File.open(memo_data_json_file_path(memo['id']), 'w') { |file| JSON.dump(memo, file) }
+    File.open(memo_data_json_file_path(memo[:id]), 'w') { |file| JSON.dump(memo, file) }
   end
 end
 
@@ -41,7 +41,7 @@ get '/' do
 end
 
 get '/memos' do
-  @memos = Dir.glob('json/*.json').map { |file| JSON.parse(File.read(file)) }
+  @memos = Dir.glob('json/*.json').map { |file| JSON.parse(File.read(file), symbolize_names: true) }
   erb :index
 end
 
@@ -69,22 +69,22 @@ end
 
 post '/memos' do
   memo = {
-    'id' => make_id,
-    'title' => params[:title],
-    'text' => params[:text]
+    id: make_id,
+    title: params[:title],
+    text: params[:text]
   }
   save_memo(memo)
-  redirect to("/memos/#{memo['id']}")
+  redirect to("/memos/#{memo[:id]}")
 end
 
 patch '/memos/:id' do
   memo = {
-    'id' => params[:id],
-    'title' => params[:title],
-    'text' => params[:text]
+    id: params[:id],
+    title: params[:title],
+    text: params[:text]
   }
   save_memo(memo)
-  redirect to("/memos/#{memo['id']}")
+  redirect to("/memos/#{memo[:id]}")
 end
 
 delete '/memos/:id' do

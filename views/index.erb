@@ -4,7 +4,7 @@
 <section>
   <ul class="index_memo_list">
     <% @memos.each do |memo| %>
-      <li class="memo_list_title"><a href="<%= "/memos/#{memo['id']}" %>"><%= h(memo['title']) %></a></li>
+      <li class="memo_list_title"><a href="/memos/<%= memo[:id] %>"><%= h(memo[:title]) %></a></li>
     <% end %>
   </ul>
   <div>
