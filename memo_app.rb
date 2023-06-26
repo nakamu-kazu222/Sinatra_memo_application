@@ -43,7 +43,7 @@ helpers do
 
   def save_memo(memo)
     db_connection do |conn|
-      if memo['id'].nil?
+      if memo[:id].nil? || get_memo(memo[:id]).nil?
         conn.exec_params('INSERT INTO memos (id, title, text) VALUES ($1::uuid, $2, $3) ON CONFLICT (id) DO UPDATE SET title = $2, text = $3',
                          [memo[:id], memo[:title], memo[:text]])
       else
@@ -94,7 +94,7 @@ end
 
 post '/memos' do
   memo = {
-    id: make_id,
+    id: make_id.to_sym,
     title: params[:title],
     text: params[:text]
   }
