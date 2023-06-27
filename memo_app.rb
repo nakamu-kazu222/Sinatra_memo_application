@@ -2,26 +2,16 @@
 
 require 'sinatra'
 require 'sinatra/reloader'
-require 'json'
 require 'securerandom'
 require 'rack/session/cookie'
 require 'pg'
 
 configure do
-  conn = PG.connect(dbname: 'postgres', user: 'postgres')
-  result = conn.exec("SELECT * FROM information_schema.tables WHERE table_name = 'memos'")
-  conn.exec('CREATE TABLE memos (id UUID PRIMARY KEY, title varchar(255), text text)') if result.values.empty?
+  connection = PG.connect(dbname: 'sinatra_memo', user: 'postgres')
+  connection.exec("SELECT * FROM information_schema.tables WHERE table_name = 'memos'")
 end
 
 helpers do
-  def conn
-    @conn ||= PG.connect(dbname: 'postgres', user: 'postgres')
-  end
-
-  def memo_data_json_file_path(id)
-    "json/memos_#{id}.json"
-  end
-
   def h(text)
     Rack::Utils.escape_html(text)
   end
@@ -30,31 +20,25 @@ helpers do
     SecureRandom.uuid
   end
 
-  def db_connection
-    yield(conn)
-  ensure
-    conn&.close
+  def db_connection(&block)
+    PG.connect(dbname: 'sinatra_memo', user: 'postgres', &block)
   end
 
   def get_memo(id)
-    result = conn.exec_params('SELECT * FROM memos WHERE id = $1', [id])
-    result[0]&.transform_keys(&:to_sym) unless result.count.zero?
-  end
-
-  def save_memo(memo)
-    db_connection do |conn|
-      if memo[:id].nil? || get_memo(memo[:id]).nil?
-        conn.exec_params('INSERT INTO memos (id, title, text) VALUES ($1::uuid, $2, $3) ON CONFLICT (id) DO UPDATE SET title = $2, text = $3',
-                         [memo[:id], memo[:title], memo[:text]])
-      else
-        conn.exec_params('UPDATE memos SET title = $1, text = $2 WHERE id = $3', [memo[:title], memo[:text], memo[:id]])
-      end
+    db_connection do |connection|
+      result_memo_data = connection.exec_params('SELECT * FROM memos WHERE id = $1', [id])
+      result_memo_data.map { |memo_data| memo_data.to_h.transform_keys(&:to_sym) }.find { true }
     end
   end
 
-  def delete_memo(id)
-    db_connection do |conn|
-      conn.exec_params('DELETE FROM memos WHERE id = $1', [id])
+  def save_memo(memo)
+    db_connection do |connection|
+      if memo[:id].nil? || get_memo(memo[:id]).nil?
+        connection.exec_params('INSERT INTO memos (id, title, text) VALUES ($1::uuid, $2, $3) ON CONFLICT (id) DO UPDATE SET title = $2, text = $3',
+                               [memo[:id], memo[:title], memo[:text]])
+      else
+        connection.exec_params('UPDATE memos SET title = $1, text = $2 WHERE id = $3', [memo[:title], memo[:text], memo[:id]])
+      end
     end
   end
 end
@@ -64,9 +48,10 @@ get '/' do
 end
 
 get '/memos' do
-  @memos = []
-  result = conn.exec('SELECT * FROM memos')
-  @memos = result.map { |data| data.transform_keys(&:to_sym) }
+  @memos = db_connection do |connection|
+    result_memo_data = connection.exec('SELECT * FROM memos')
+    result_memo_data.map { |data| data.transform_keys(&:to_sym) }
+  end
   erb :index
 end
 
@@ -113,7 +98,7 @@ patch '/memos/:id' do
 end
 
 delete '/memos/:id' do
-  delete_memo(params[:id])
+  db_connection { |connection| connection.exec_params('DELETE FROM memos WHERE id = $1', [params[:id]]) }
   redirect to('/memos')
 end
 
