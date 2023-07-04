@@ -24,21 +24,17 @@ helpers do
     PG.connect(dbname: 'sinatra_memo', user: 'postgres', &block)
   end
 
-  def get_memo(id)
-    db_connection do |connection|
-      result_memo_data = connection.exec_params('SELECT * FROM memos WHERE id = $1', [id])
-      result_memo_data.map { |memo_data| memo_data.to_h.transform_keys(&:to_sym) }.find { true }
-    end
+  def get_memo(id, connection)
+    result_memo_data = connection.exec_params('SELECT * FROM memos WHERE id = $1', [id])
+    result_memo_data.map { |memo_data| memo_data.to_h.transform_keys(&:to_sym) }.find { true }
   end
 
-  def save_memo(memo)
-    db_connection do |connection|
-      if memo[:id].nil? || get_memo(memo[:id]).nil?
-        connection.exec_params('INSERT INTO memos (id, title, text) VALUES ($1::uuid, $2, $3) ON CONFLICT (id) DO UPDATE SET title = $2, text = $3',
-                               [memo[:id], memo[:title], memo[:text]])
-      else
-        connection.exec_params('UPDATE memos SET title = $1, text = $2 WHERE id = $3', [memo[:title], memo[:text], memo[:id]])
-      end
+  def save_memo(memo, connection)
+    if memo[:id].nil? || get_memo(memo[:id], connection).nil?
+      connection.exec_params('INSERT INTO memos (id, title, text) VALUES ($1::uuid, $2, $3) ON CONFLICT (id) DO UPDATE SET title = $2, text = $3',
+                             [memo[:id], memo[:title], memo[:text]])
+    else
+      connection.exec_params('UPDATE memos SET title = $1, text = $2 WHERE id = $3', [memo[:title], memo[:text], memo[:id]])
     end
   end
 end
@@ -60,41 +56,49 @@ get '/memos/new' do
 end
 
 get '/memos/:id' do
-  @memo = get_memo(params[:id])
-  if @memo.nil?
-    erb :not_found_error
-  else
-    erb :show
+  db_connection do |connection|
+    @memo = get_memo(params[:id], connection)
+    if @memo.nil?
+      erb :not_found_error
+    else
+      erb :show
+    end
   end
 end
 
 get '/memos/:id/edit' do
-  @memo = get_memo(params[:id])
-  if @memo.nil?
-    erb :not_found_error
-  else
-    erb :edit
+  db_connection do |connection|
+    @memo = get_memo(params[:id], connection)
+    if @memo.nil?
+      erb :not_found_error
+    else
+      erb :edit
+    end
   end
 end
 
 post '/memos' do
-  memo = {
-    id: make_id.to_sym,
-    title: params[:title],
-    text: params[:text]
-  }
-  save_memo(memo)
-  redirect to("/memos/#{memo[:id]}")
+  db_connection do |connection|
+    memo = {
+      id: make_id.to_sym,
+      title: params[:title],
+      text: params[:text]
+    }
+    save_memo(memo, connection)
+    redirect to("/memos/#{memo[:id]}")
+  end
 end
 
 patch '/memos/:id' do
-  memo = {
-    id: params[:id],
-    title: params[:title],
-    text: params[:text]
-  }
-  save_memo(memo)
-  redirect to("/memos/#{memo[:id]}")
+  db_connection do |connection|
+    memo = {
+      id: params[:id],
+      title: params[:title],
+      text: params[:text]
+    }
+    save_memo(memo, connection)
+    redirect to("/memos/#{memo[:id]}")
+  end
 end
 
 delete '/memos/:id' do
