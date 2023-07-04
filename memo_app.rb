@@ -80,7 +80,7 @@ end
 post '/memos' do
   db_connection do |connection|
     memo = {
-      id: make_id.to_sym,
+      id: make_id,
       title: params[:title],
       text: params[:text]
     }
