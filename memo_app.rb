@@ -45,8 +45,7 @@ end
 
 get '/memos' do
   @memos = db_connection do |connection|
-    result_memo_data = connection.exec('SELECT * FROM memos')
-    result_memo_data.map { |data| data.transform_keys(&:to_sym) }
+    connection.exec('SELECT * FROM memos').map { |data| data.transform_keys(&:to_sym) }
   end
   erb :index
 end
@@ -58,26 +57,28 @@ end
 get '/memos/:id' do
   db_connection do |connection|
     @memo = get_memo(params[:id], connection)
-    if @memo.nil?
-      erb :not_found_error
-    else
-      erb :show
-    end
+  end
+  if @memo.nil?
+    erb :not_found_error
+  else
+    erb :show
   end
 end
 
 get '/memos/:id/edit' do
   db_connection do |connection|
     @memo = get_memo(params[:id], connection)
-    if @memo.nil?
-      erb :not_found_error
-    else
-      erb :edit
-    end
+  end
+  if @memo.nil?
+    erb :not_found_error
+  else
+    erb :edit
   end
 end
 
 post '/memos' do
+  memo = nil
+
   db_connection do |connection|
     memo = {
       id: make_id,
@@ -85,11 +86,13 @@ post '/memos' do
       text: params[:text]
     }
     save_memo(memo, connection)
-    redirect to("/memos/#{memo[:id]}")
   end
+  redirect to("/memos/#{memo[:id]}")
 end
 
 patch '/memos/:id' do
+  memo = nil
+
   db_connection do |connection|
     memo = {
       id: params[:id],
@@ -97,12 +100,14 @@ patch '/memos/:id' do
       text: params[:text]
     }
     save_memo(memo, connection)
-    redirect to("/memos/#{memo[:id]}")
   end
+  redirect to("/memos/#{memo[:id]}")
 end
 
 delete '/memos/:id' do
-  db_connection { |connection| connection.exec_params('DELETE FROM memos WHERE id = $1', [params[:id]]) }
+  db_connection do |connection|
+    connection.exec_params('DELETE FROM memos WHERE id = $1', [params[:id]])
+  end
   redirect to('/memos')
 end
 
