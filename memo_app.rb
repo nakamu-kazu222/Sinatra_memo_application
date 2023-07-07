@@ -6,11 +6,6 @@ require 'securerandom'
 require 'rack/session/cookie'
 require 'pg'
 
-configure do
-  connection = PG.connect(dbname: 'sinatra_memo', user: 'postgres')
-  connection.exec("SELECT * FROM information_schema.tables WHERE table_name = 'memos'")
-end
-
 helpers do
   def h(text)
     Rack::Utils.escape_html(text)
