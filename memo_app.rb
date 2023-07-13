@@ -2,15 +2,11 @@
 
 require 'sinatra'
 require 'sinatra/reloader'
-require 'json'
 require 'securerandom'
 require 'rack/session/cookie'
+require 'pg'
 
 helpers do
-  def memo_data_json_file_path(id)
-    "json/memos_#{id}.json"
-  end
-
   def h(text)
     Rack::Utils.escape_html(text)
   end
@@ -19,21 +15,23 @@ helpers do
     SecureRandom.uuid
   end
 
-  def get_memo(id)
-    memo_file_path = memo_data_json_file_path(id)
-    return nil unless File.exist?(memo_file_path)
-
-    memo_content = File.read(memo_file_path)
-    JSON.parse(memo_content, symbolize_names: true)
+  def db_connection(&block)
+    PG.connect(dbname: 'sinatra_memo', user: 'postgres', &block)
   end
 
-  def save_memo(memo)
-    File.open(memo_data_json_file_path(memo[:id]), 'w') { |file| JSON.dump(memo, file) }
+  def get_memo(id, connection)
+    result_memo_data = connection.exec_params('SELECT * FROM memos WHERE id = $1', [id])
+    result[0]&.transform_keys(&:to_sym) unless result.count.zero?
   end
-end
 
-before do
-  FileUtils.mkdir_p('json') unless Dir.exist?('json')
+  def save_memo(memo, connection)
+    if memo[:id].nil? || get_memo(memo[:id], connection).nil?
+      connection.exec_params('INSERT INTO memos (id, title, text) VALUES ($1::uuid, $2, $3) ON CONFLICT (id) DO UPDATE SET title = $2, text = $3',
+                             [memo[:id], memo[:title], memo[:text]])
+    else
+      connection.exec_params('UPDATE memos SET title = $1, text = $2 WHERE id = $3', [memo[:title], memo[:text], memo[:id]])
+    end
+  end
 end
 
 get '/' do
@@ -41,7 +39,9 @@ get '/' do
 end
 
 get '/memos' do
-  @memos = Dir.glob('json/*.json').map { |file| JSON.parse(File.read(file), symbolize_names: true) }
+  @memos = db_connection do |connection|
+    connection.exec('SELECT * FROM memos').map { |data| data.transform_keys(&:to_sym) }
+  end
   erb :index
 end
 
@@ -50,7 +50,9 @@ get '/memos/new' do
 end
 
 get '/memos/:id' do
-  @memo = get_memo(params[:id])
+  db_connection do |connection|
+    @memo = get_memo(params[:id], connection)
+  end
   if @memo.nil?
     erb :not_found_error
   else
@@ -59,7 +61,9 @@ get '/memos/:id' do
 end
 
 get '/memos/:id/edit' do
-  @memo = get_memo(params[:id])
+  db_connection do |connection|
+    @memo = get_memo(params[:id], connection)
+  end
   if @memo.nil?
     erb :not_found_error
   else
@@ -68,27 +72,37 @@ get '/memos/:id/edit' do
 end
 
 post '/memos' do
-  memo = {
-    id: make_id,
-    title: params[:title],
-    text: params[:text]
-  }
-  save_memo(memo)
+  memo = nil
+
+  db_connection do |connection|
+    memo = {
+      id: make_id,
+      title: params[:title],
+      text: params[:text]
+    }
+    save_memo(memo, connection)
+  end
   redirect to("/memos/#{memo[:id]}")
 end
 
 patch '/memos/:id' do
-  memo = {
-    id: params[:id],
-    title: params[:title],
-    text: params[:text]
-  }
-  save_memo(memo)
+  memo = nil
+
+  db_connection do |connection|
+    memo = {
+      id: params[:id],
+      title: params[:title],
+      text: params[:text]
+    }
+    save_memo(memo, connection)
+  end
   redirect to("/memos/#{memo[:id]}")
 end
 
 delete '/memos/:id' do
-  File.delete(memo_data_json_file_path(params[:id]))
+  db_connection do |connection|
+    connection.exec_params('DELETE FROM memos WHERE id = $1', [params[:id]])
+  end
   redirect to('/memos')
 end
 
