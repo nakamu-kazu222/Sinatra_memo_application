@@ -21,7 +21,7 @@ helpers do
 
   def get_memo(id, connection)
     result_memo_data = connection.exec_params('SELECT * FROM memos WHERE id = $1', [id])
-    result_memo_data.map { |memo_data| memo_data.to_h.transform_keys(&:to_sym) }.find { true }
+    result[0]&.transform_keys(&:to_sym) unless result.count.zero?
   end
 
   def save_memo(memo, connection)
