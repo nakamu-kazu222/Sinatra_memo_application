@@ -1,5 +1,5 @@
 # Sinatra_memo_application
-## 概要
+## 概要.
 Sinatra を利用したメモアプリケーションです
 メモを作成、編集、削除、一覧表示ができます
 メモの保存には PostgreSQL を使用します
